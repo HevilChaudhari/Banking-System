@@ -32,7 +32,7 @@ func (repository *InMemoryCustomerRepository) Create(customer models.Customer) (
 	defer repository.mutex.Unlock()
 	for _, cus := range repository.customers {
 		if cus.Email == customer.Email {
-			return models.Customer{}, errors.New("Customer Already Exist")
+			return models.Customer{}, errors.New("customer already exist")
 		}
 	}
 
