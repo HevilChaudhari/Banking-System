@@ -13,4 +13,5 @@ type Customer struct {
 	KYCStatus   KYCStatus      `json:"kycStatus"`
 	CreatedAt   time.Time      `json:"createdAt"`
 	Status      CustomerStatus `json:"status"`
+	PasswordHash string         `json:"-"`
 }
