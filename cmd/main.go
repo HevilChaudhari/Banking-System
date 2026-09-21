@@ -30,7 +30,7 @@ func main() {
 	accountHandler := handlers.NewAccountHandler(accountService)
 
 	transactionRepository := repositories.NewPostgresTransactionRepository(pool)
-	transactionService := services.NewInMemoryTransactionService(transactionRepository, accountRepository)
+	transactionService := services.NewPostgresTransactionService(pool, transactionRepository)
 	transactionHandler := handlers.NewTransactionHandler(transactionService)
 
 	authService := services.NewAuthService(customerService, customerRepository)

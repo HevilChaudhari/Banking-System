@@ -28,10 +28,19 @@ func Connect() (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("database ping failed: %w", err)
 	}
 
-	// Auto-migrate: ensure password_hash column exists on customers
+	// Auto-migrate: ensure schema constraints and columns exist
 	migrationQuery := `
 		ALTER TABLE customers 
 		ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255) NOT NULL DEFAULT '';
+
+		DO $$
+		BEGIN
+			IF NOT EXISTS (
+				SELECT 1 FROM pg_constraint WHERE conname = 'chk_accounts_balance_non_negative'
+			) THEN
+				ALTER TABLE accounts ADD CONSTRAINT chk_accounts_balance_non_negative CHECK (balance >= 0);
+			END IF;
+		END $$;
 	`
 	if _, err := pool.Exec(ctx, migrationQuery); err != nil {
 		return nil, fmt.Errorf("database migration failed: %w", err)
